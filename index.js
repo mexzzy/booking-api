@@ -1,11 +1,22 @@
-import express from "express";
-import bodyParser from "body-parser";
+const { port } = require("./config.js");
+const mongoose = require("mongoose");
+const express = require("express");
+const database = require("./database/mongoDB.js");
+const bodyParser = require("body-parser");
+const auth = require("./routes/auth.js");
+const booking = require("./routes/booking.js");
 
 const app = express();
-const PORT = 8000;
 
 app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-app.listen(PORT, () =>
-  console.log(`server is running on port: http://localhost:${PORT}`)
+app.use("/v1", auth);
+app.use("/v1", booking);
+
+database();
+
+app.listen(port, () =>
+  console.log(`server is running on port: http://localhost:${port}`)
 );
